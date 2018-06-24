@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Promise</title>
+</head>
+<body>
+    
+</body>
+<script>
+    //一、Promise是什么？
+    //MDN:Promise对象是一个用于异步计算,Promise表示一个肯能现在知道,也可能在未来之后才能知道的值
+    //通俗:1.主要是用于异步计算2.可以将异步操作队列化，按照期望的顺序执行,返回符合预期的结果3.可以在对象之间传递和操作Promise,帮助我们处理队列
+
+    //二、Promise产生的原因
+    //Javascript包含大量异步操作,在浏览器中异步操作主要是以异步事件为主,回调主要出现在Ajax;但是在Node中比较频繁,无阻塞高并发(大量的依赖回调函数)==>回调地狱
+    //异步操作的常见语法:1.事件侦听与响应：$("ele").on('click',fun);
+    //                  2.回调:$.ajax('url',success:function(res){这里是回调函数});或者$(function(){页面加载完成之后回调})
+    //回调的四个问题:嵌套层次的,无法使用return throw，无法检索堆栈信息,多个回调之间难以建立联系
+
+
+    //三、Promise的设计
+    // new Promise(function(resolve,reject){//执行器 executor
+    //     //一段耗时很长的异步操作
+    //     resolve();//数据处理完成
+    //     reject();//数据出错
+    // }).then(function A() {
+    //     //成功 下一步
+    // },function B(){
+    //     //失败 做相应的处理
+    // })
+    //它是一个代理对象，和原先进行的操作并无关系，他通过引入一个回调，避免更多的回调
+    //Promise3个状态：1.pending 待定状态 -初始状态     2.fulfilled 实现 操作成功    3.reject 否决 操作失败
+    //当状态发生改变的时候，就会触发then()里的响应函数处理后续的步骤
+    //.then()接收两个函数作为参数 分别代表fulfilled和rejected
+    //执行.then()函数之后会返回一个新的Promise实例，所以它可以链式调用；当前面的Promise状态改变的时候,.then()根据其最终状态，选择特定的状态响应函数执行(前面的Promise状态变为fulfilled,then就会去调用resolve函数;如果状态为reject,then就会去调用reject函数);状态响应函数可以返回新的Promise,或其他值；如果返回的是新的Promise，那么下一级.then()会在新的Promise状态改变之后执行；
+
+     //.then()里面有.then()的情况：因为.then()的返回的还是Promise实例。会等里面的.then()执行完，再执行外面
+
+    //练习：下面的四种Promise的区别是什么？
+    // doSomething().then(function(){
+    //     return doSomethingElse();
+    // });
+    // doSomething().then(function(){
+    //     doSomethingElse();
+    // }); 
+    // doSomething().then(doSomethingElse());   
+    // doSomething().then(doSomethingElse);  
+
+    //Promise 错误处理(两种)
+    //1.Promise 会自动捕获内部异常，并交给rejected响应函数处理    
+    //2.Promise 通过throw error抛出错误，catch捕获异常
+    //注意，当执行完catch之后，后面还有then可以继续执行，catch也会抛出一个Promise对象；但是如果在catch中抛出错误，就会直接进入下一个catch
+    //建议在队列后面加一个catch
+
+
+
+    //Promise的其他函数
+    //Promise.all():批量执行
+    //              Promise.all([p1,p2,p3,p4...])用于将多个Promise实例，包装成一个新的Promise实例，返回一个新的Promise
+    //              接收一个数组作为参数。数组里面可以是Promise对象，也可以是别的值，只有Promise会等待状态改变；当所有子Promise都
+    // 完成，该Promise完成，返回值是全部值的数组；如果有一个失败，返回值也是失败
+    //最常见就是和.map()连用
+
+
+    //实现队列
+    //使用forEach循环
+    // function queue(things){
+    //     let promise=Promise.resolve();
+    //     things.forEach(thing => {
+    //         promise=promise.then(()=>{
+    //             return new Promise(resolve=>{
+    //                 doThing(thing,()=>{
+    //                     resolve();
+    //                 })
+    //             })
+    //         })
+    //     });
+    //     return promise;
+    // }
+    // queue(['lots','of','things']);
+
+
+
+    //Promise.resolve()
+    //返回一个fulfilled的Promise实例，或原始Promise实例
+
+
+    //Promise.reject()
+    //返回一个rejected的Promise实例
+
+
+    //Promise.race()
+    //类似Promise.all(),区别就是在于它有任意一个完成就算完成
+    //常见用法：把异步操作和定时器放在一起；如果定时器先触发，就认为是超时，告知用户
+
+
+    //把回调包装成Promise
+    //可读性好；返回结果可以加入任何Promise队列
+    //把任何异步操作包装成Promise
+
+
+    //jquery 实现的Promise
+    // $.ajax(url,{
+    //     dataType:'json'
+    // }).then(json=>{
+
+    // })
+
+    //IE中只有edge实现了Promise，但是可以选择其他的类库
+
+    //Fetch API是XMLHttpRequest的现代化返回的是一个Promise实例
+
+
+
+    //ES2017新增运算符，新的语言元素：async/await(异步函数)
+    // 1.赋予JS以顺序手法编写异步脚本的能力
+    // 2.既保留异步运算的无阻塞特性，还继续使用同步写法
+    // 3.还能正常使用return/try/catch
+    //async/await然需要Promise
+
+
+
+
+
+
+</script>
+</html>
